@@ -15,22 +15,22 @@ import {
   updateQuestionOption,
   updateQuestionType,
 } from '../../store/formBuilderSlice';
-import type { QuestionType } from '../../types/forms';
+import { QuestionType } from '../../graphql/generated/graphql';
 import { validateDraft } from '../../utils/formValidation';
 import { QuestionEditor } from './QuestionEditor';
 
-const QUESTION_TYPE_OPTIONS: Array<{ value: QuestionType; label: string }> = [
-  { value: 'TEXT', label: 'Text' },
-  { value: 'MULTIPLE_CHOICE', label: 'Multiple choice' },
-  { value: 'CHECKBOX', label: 'Checkboxes' },
-  { value: 'DATE', label: 'Date' },
+const QUESTION_TYPE_OPTIONS = [
+  { value: QuestionType.Text, label: 'Text' },
+  { value: QuestionType.MultipleChoice, label: 'Multiple choice' },
+  { value: QuestionType.Checkbox, label: 'Checkboxes' },
+  { value: QuestionType.Date, label: 'Date' },
 ];
 
 export const FormBuilder = () => {
   const draft = useAppSelector((state) => state.formBuilder);
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [selectedType, setSelectedType] = useState<QuestionType>('TEXT');
+  const [selectedType, setSelectedType] = useState<QuestionType>(QuestionType.Text);
   const [createForm, createFormState] = useCreateFormMutation();
 
   const validationIssues = useMemo(() => validateDraft(draft), [draft]);

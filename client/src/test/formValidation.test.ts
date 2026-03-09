@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { validateDraft, validateAnswers } from '../utils/formValidation';
 import type { FormDraft } from '../types/forms';
+import { QuestionType } from '../graphql/generated/graphql';
 
 const validDraft: FormDraft = {
   title: 'Candidate survey',
@@ -9,14 +10,14 @@ const validDraft: FormDraft = {
     {
       id: '1',
       label: 'Your name',
-      type: 'TEXT',
+      type: QuestionType.Text,
       required: true,
       options: [],
     },
     {
       id: '2',
       label: 'Your stack',
-      type: 'MULTIPLE_CHOICE',
+      type: QuestionType.MultipleChoice,
       required: true,
       options: ['React', 'Vue'],
     },

@@ -1,4 +1,5 @@
-import type { BuilderQuestion, QuestionType } from '../../types/forms';
+import type { BuilderQuestion } from '../../types/forms';
+import { QuestionType } from '../../graphql/generated/graphql';
 
 interface QuestionEditorProps {
   index: number;
@@ -13,10 +14,10 @@ interface QuestionEditorProps {
 }
 
 const QUESTION_TYPES: Array<{ value: QuestionType; label: string }> = [
-  { value: 'TEXT', label: 'Text' },
-  { value: 'MULTIPLE_CHOICE', label: 'Multiple choice' },
-  { value: 'CHECKBOX', label: 'Checkboxes' },
-  { value: 'DATE', label: 'Date' },
+  { value: QuestionType.Text, label: 'Text' },
+  { value: QuestionType.MultipleChoice, label: 'Multiple choice' },
+  { value: QuestionType.Checkbox, label: 'Checkboxes' },
+  { value: QuestionType.Date, label: 'Date' },
 ];
 
 export const QuestionEditor = ({

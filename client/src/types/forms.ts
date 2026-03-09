@@ -1,4 +1,6 @@
-export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'CHECKBOX' | 'DATE';
+import type { QuestionType as GraphqlQuestionType } from '../graphql/generated/graphql';
+
+export type QuestionType = GraphqlQuestionType;
 
 export interface BuilderQuestion {
   id: string;

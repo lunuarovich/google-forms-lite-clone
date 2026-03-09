@@ -1,166 +1,147 @@
-import { parse, type DocumentNode } from 'graphql';
-
+/* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/core';
 export type Maybe<T> = T | null;
+export type InputMaybe<T> = Maybe<T>;
+export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
+export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
+export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+/** All built-in and custom scalars, mapped to their actual values */
+export type Scalars = {
+  ID: { input: string; output: string; }
+  String: { input: string; output: string; }
+  Boolean: { input: boolean; output: boolean; }
+  Int: { input: number; output: number; }
+  Float: { input: number; output: number; }
+};
 
-export type QuestionType = 'TEXT' | 'MULTIPLE_CHOICE' | 'CHECKBOX' | 'DATE';
+export type Answer = {
+  __typename?: 'Answer';
+  questionId: Scalars['ID']['output'];
+  value: Array<Scalars['String']['output']>;
+};
 
-export interface QuestionInput {
-  label: string;
+export type AnswerInput = {
+  questionId: Scalars['ID']['input'];
+  value: Array<Scalars['String']['input']>;
+};
+
+export type Form = {
+  __typename?: 'Form';
+  createdAt: Scalars['String']['output'];
+  description?: Maybe<Scalars['String']['output']>;
+  id: Scalars['ID']['output'];
+  questions: Array<Question>;
+  title: Scalars['String']['output'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  createForm: Form;
+  submitResponse: Response;
+};
+
+
+export type MutationCreateFormArgs = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  questions?: InputMaybe<Array<QuestionInput>>;
+  title: Scalars['String']['input'];
+};
+
+
+export type MutationSubmitResponseArgs = {
+  answers: Array<AnswerInput>;
+  formId: Scalars['ID']['input'];
+};
+
+export type Query = {
+  __typename?: 'Query';
+  form?: Maybe<Form>;
+  forms: Array<Form>;
+  responses: Array<Response>;
+};
+
+
+export type QueryFormArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type QueryResponsesArgs = {
+  formId: Scalars['ID']['input'];
+};
+
+export type Question = {
+  __typename?: 'Question';
+  id: Scalars['ID']['output'];
+  label: Scalars['String']['output'];
+  options: Array<Scalars['String']['output']>;
+  required: Scalars['Boolean']['output'];
   type: QuestionType;
-  required?: boolean | null;
-  options?: string[] | null;
-}
+};
 
-export interface AnswerInput {
-  questionId: string;
-  value: string[];
-}
-
-export interface FormQuestion {
-  id: string;
-  label: string;
+export type QuestionInput = {
+  label: Scalars['String']['input'];
+  options?: InputMaybe<Array<Scalars['String']['input']>>;
+  required?: InputMaybe<Scalars['Boolean']['input']>;
   type: QuestionType;
-  required: boolean;
-  options: string[];
+};
+
+export enum QuestionType {
+  Checkbox = 'CHECKBOX',
+  Date = 'DATE',
+  MultipleChoice = 'MULTIPLE_CHOICE',
+  Text = 'TEXT'
 }
 
-export interface FormEntity {
-  id: string;
-  title: string;
-  description?: Maybe<string>;
-  createdAt: string;
-  questions: FormQuestion[];
-}
+export type Response = {
+  __typename?: 'Response';
+  answers: Array<Answer>;
+  formId: Scalars['ID']['output'];
+  id: Scalars['ID']['output'];
+  submittedAt: Scalars['String']['output'];
+};
 
-export interface ResponseAnswer {
-  questionId: string;
-  value: string[];
-}
+export type GetFormsQueryVariables = Exact<{ [key: string]: never; }>;
 
-export interface ResponseEntity {
-  id: string;
-  formId: string;
-  submittedAt: string;
-  answers: ResponseAnswer[];
-}
 
-export interface GetFormsQuery {
-  forms: FormEntity[];
-}
+export type GetFormsQuery = { __typename?: 'Query', forms: Array<{ __typename?: 'Form', id: string, title: string, description?: string | null, createdAt: string, questions: Array<{ __typename?: 'Question', id: string, label: string, type: QuestionType, required: boolean, options: Array<string> }> }> };
 
-export interface GetFormQueryVariables {
-  id: string;
-}
+export type GetFormQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
 
-export interface GetFormQuery {
-  form: Maybe<FormEntity>;
-}
 
-export interface GetResponsesQueryVariables {
-  formId: string;
-}
+export type GetFormQuery = { __typename?: 'Query', form?: { __typename?: 'Form', id: string, title: string, description?: string | null, createdAt: string, questions: Array<{ __typename?: 'Question', id: string, label: string, type: QuestionType, required: boolean, options: Array<string> }> } | null };
 
-export interface GetResponsesQuery {
-  responses: ResponseEntity[];
-}
+export type GetResponsesQueryVariables = Exact<{
+  formId: Scalars['ID']['input'];
+}>;
 
-export interface CreateFormMutationVariables {
-  title: string;
-  description?: Maybe<string>;
-  questions?: QuestionInput[];
-}
 
-export interface CreateFormMutation {
-  createForm: FormEntity;
-}
+export type GetResponsesQuery = { __typename?: 'Query', responses: Array<{ __typename?: 'Response', id: string, formId: string, submittedAt: string, answers: Array<{ __typename?: 'Answer', questionId: string, value: Array<string> }> }> };
 
-export interface SubmitResponseMutationVariables {
-  formId: string;
-  answers: AnswerInput[];
-}
+export type CreateFormMutationVariables = Exact<{
+  title: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
+  questions?: InputMaybe<Array<QuestionInput> | QuestionInput>;
+}>;
 
-export interface SubmitResponseMutation {
-  submitResponse: ResponseEntity;
-}
 
-export const GetFormsDocument: DocumentNode = parse(`
-  query GetForms {
-    forms {
-      id
-      title
-      description
-      createdAt
-      questions {
-        id
-        label
-        type
-        required
-        options
-      }
-    }
-  }
-`);
+export type CreateFormMutation = { __typename?: 'Mutation', createForm: { __typename?: 'Form', id: string, title: string, description?: string | null, createdAt: string, questions: Array<{ __typename?: 'Question', id: string, label: string, type: QuestionType, required: boolean, options: Array<string> }> } };
 
-export const GetFormDocument: DocumentNode = parse(`
-  query GetForm($id: ID!) {
-    form(id: $id) {
-      id
-      title
-      description
-      createdAt
-      questions {
-        id
-        label
-        type
-        required
-        options
-      }
-    }
-  }
-`);
+export type SubmitResponseMutationVariables = Exact<{
+  formId: Scalars['ID']['input'];
+  answers: Array<AnswerInput> | AnswerInput;
+}>;
 
-export const GetResponsesDocument: DocumentNode = parse(`
-  query GetResponses($formId: ID!) {
-    responses(formId: $formId) {
-      id
-      formId
-      submittedAt
-      answers {
-        questionId
-        value
-      }
-    }
-  }
-`);
 
-export const CreateFormDocument: DocumentNode = parse(`
-  mutation CreateForm($title: String!, $description: String, $questions: [QuestionInput!]) {
-    createForm(title: $title, description: $description, questions: $questions) {
-      id
-      title
-      description
-      createdAt
-      questions {
-        id
-        label
-        type
-        required
-        options
-      }
-    }
-  }
-`);
+export type SubmitResponseMutation = { __typename?: 'Mutation', submitResponse: { __typename?: 'Response', id: string, formId: string, submittedAt: string, answers: Array<{ __typename?: 'Answer', questionId: string, value: Array<string> }> } };
 
-export const SubmitResponseDocument: DocumentNode = parse(`
-  mutation SubmitResponse($formId: ID!, $answers: [AnswerInput!]!) {
-    submitResponse(formId: $formId, answers: $answers) {
-      id
-      formId
-      submittedAt
-      answers {
-        questionId
-        value
-      }
-    }
-  }
-`);
+
+export const GetFormsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetForms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"forms"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"required"}},{"kind":"Field","name":{"kind":"Name","value":"options"}}]}}]}}]}}]} as unknown as DocumentNode<GetFormsQuery, GetFormsQueryVariables>;
+export const GetFormDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetForm"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"form"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"required"}},{"kind":"Field","name":{"kind":"Name","value":"options"}}]}}]}}]}}]} as unknown as DocumentNode<GetFormQuery, GetFormQueryVariables>;
+export const GetResponsesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetResponses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"formId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"responses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"formId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"formId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"formId"}},{"kind":"Field","name":{"kind":"Name","value":"submittedAt"}},{"kind":"Field","name":{"kind":"Name","value":"answers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questionId"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]}}]} as unknown as DocumentNode<GetResponsesQuery, GetResponsesQueryVariables>;
+export const CreateFormDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateForm"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"title"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"questions"}},"type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"QuestionInput"}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createForm"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"title"},"value":{"kind":"Variable","name":{"kind":"Name","value":"title"}}},{"kind":"Argument","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}},{"kind":"Argument","name":{"kind":"Name","value":"questions"},"value":{"kind":"Variable","name":{"kind":"Name","value":"questions"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"title"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"createdAt"}},{"kind":"Field","name":{"kind":"Name","value":"questions"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"required"}},{"kind":"Field","name":{"kind":"Name","value":"options"}}]}}]}}]}}]} as unknown as DocumentNode<CreateFormMutation, CreateFormMutationVariables>;
+export const SubmitResponseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SubmitResponse"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"formId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ID"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"answers"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"AnswerInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"submitResponse"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"formId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"formId"}}},{"kind":"Argument","name":{"kind":"Name","value":"answers"},"value":{"kind":"Variable","name":{"kind":"Name","value":"answers"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"formId"}},{"kind":"Field","name":{"kind":"Name","value":"submittedAt"}},{"kind":"Field","name":{"kind":"Name","value":"answers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"questionId"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]}}]} as unknown as DocumentNode<SubmitResponseMutation, SubmitResponseMutationVariables>;
